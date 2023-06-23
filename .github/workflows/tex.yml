@@ -6,15 +6,8 @@ jobs:
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v3
-      - name: Compile LaTeX document
-        uses: xu-cheng/latex-action@v2
-        with:
-          root_file: document.tex
-      - name: Upload PDF file
-        uses: actions/upload-artifact@v3
-        with:
-          name: PDF
-          path: document.pdf
+      - name: Create Tag
+        run: git tag ${{ github.event.inputs.tag }}
       - name: Create Release
         id: create_release
         uses: actions/create-release@latest
@@ -32,6 +25,6 @@ jobs:
       - name: Upload artifact to release
         uses: softprops/action-gh-release@v1
         with:
-          files: document.pdf
+          files: document.tex
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
