@@ -7,24 +7,17 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v3
       - name: Create Tag
-        run: git tag ${{ github.event.inputs.tag }}
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        uses: rickstaa/action-create-tag@v1
+        id: "tag_create"
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
-          draft: false
-          prerelease: false
-      - name: Upload artifact to release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: document.tex
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: "latest"
+          tag_exists_error: false
+          message: "Latest release"
+
+      # Print result using the env variable.
+      -  run: |
+          echo "Tag already present: ${{ env.TAG_EXISTS }}"
+
+      # Print result using the action output.
+      - run: |
+          echo "Tag already present: ${{ steps.tag_create.outputs.tag_exists }}"
